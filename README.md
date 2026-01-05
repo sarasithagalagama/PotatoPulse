@@ -16,7 +16,31 @@ The core classification engine is a sequential CNN trained on the PlantVillage d
     *   32-64 filter feature extraction layers with ReLU activation.
     *   MaxPooling for spatial down-sampling and translational invariance.
     *   Flattening and Dense layers with Softmax activation for multi-class probability distribution.
-*   **Optimization**: Compiled with the Adam optimizer and Sparse Categorical Crossentropy loss function for efficient convergence.
+## How the Model Was Trained
+
+*   **Dataset Setup**: Loaded using `image_dataset_from_directory()` from the PlantVillage dataset.
+*   **Preprocessing**:
+    *   Applied `Resizing(256, 256)` for standardized input.
+    *   Applied `Rescaling(1./255)` to normalize pixel intensity.
+    *   **Augmentation**: Integrated `RandomFlip("horizontal_and_vertical")` and `RandomRotation(0.2)`.
+*   **Architecture (Custom CNN)**:
+    *   Used a **Sequential** model built from scratch.
+    *   **6 Convolutional Layers**:
+        *   32 filters (3x3) + MaxPooling2D (2x2)
+        *   5 x [64 filters (3x3) + MaxPooling2D (2x2)]
+        *   Activation: `relu`
+    *   **Dense Layers**:
+        *   Flatten layer
+        *   Dense (64 units, activation='relu')
+        *   Dense (3 units, activation='softmax')
+*   **Training Config**:
+    *   Optimizer: `adam`
+    *   Loss: `SparseCategoricalCrossentropy`
+    *   Epochs: 20
+*   **Performance Achieved**:
+    *   🟩 **Training Accuracy**: ~97.77%
+    *   🟦 **Validation Accuracy**: ~97.40%
+    *   🧪 **Test Accuracy**: ~94.53%
 
 ## Technology Stack
 
