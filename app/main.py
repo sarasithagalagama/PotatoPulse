@@ -6,173 +6,189 @@ import os
 
 # Set page configuration
 st.set_page_config(
-    page_title="PotatoPulse | Disease Classification",
+    page_title="PotatoPulse",
     page_icon="🥔",
-    layout="wide",
-    initial_sidebar_state="expanded"
+    layout="centered"
 )
 
-# Custom CSS for premium aesthetics
+# Custom CSS
 st.markdown("""
     <style>
-    /* Global Styles */
-    .stApp {
-        background-color: #0e1117;
-        color: #fafafa;
-        font-family: 'Inter', sans-serif;
-    }
-    
-    /* Custom Sidebar */
-    [data-testid="stSidebar"] {
-        background-color: #161b22;
-        border-right: 1px solid #30363d;
-    }
-    
-    /* Titles and Headings */
-    h1, h2, h3 {
-        color: #2ecc71;
-        font-weight: 700;
-    }
-    
-    h1 {
-        text-align: center;
-        margin-bottom: 2rem;
-        text-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
-    }
-    
-    /* Glassmorphism Card for Results */
-    .result-card {
-        background: rgba(22, 27, 34, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(48, 54, 61, 0.5);
-        border-radius: 16px;
-        padding: 2rem;
-        margin-top: 2rem;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        text-align: center;
-    }
-    
-    /* Upload Widget Styling */
-    .stFileUploader {
-        padding: 2rem;
-        border: 2px dashed #2ecc71;
-        border-radius: 12px;
-        background-color: rgba(46, 204, 113, 0.05);
-        transition: all 0.3s ease;
-    }
-    
-    .stFileUploader:hover {
-        background-color: rgba(46, 204, 113, 0.1);
-        border-color: #27ae60;
-    }
+        /* Import Google Font */
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
-    /* Info Box styling */
-    .info-box {
-        background-color: #1f2937;
-        border-left: 4px solid #2ecc71;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 4px;
-    }
+        html, body, [class*="css"] {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        /* Main Background */
+        .stApp {
+            background-color: #F8FAFC; /* Light gray/white background for cleanliness */
+            color: #0F172A;
+        }
+        
+        /* Dark Mode Support (optional adjustments if system prefers dark) */
+        @media (prefers-color-scheme: dark) {
+            .stApp {
+                background-color: #0F172A; /* Slate 900 */
+                color: #F8FAFC;
+            }
+        }
+
+        /* Header Styling */
+        .main-header {
+            text-align: center;
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .main-header h1 {
+            font-weight: 700;
+            color: #166534; /* Green-800 */
+            margin-bottom: 0.5rem;
+            font-size: 2.5rem;
+        }
+        
+        .main-header p {
+            color: #64748B; /* Slate-500 */
+            font-size: 1.1rem;
+        }
+
+        /* File Uploader Customization */
+        [data-testid="stFileUploader"] {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #E2E8F0;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            [data-testid="stFileUploader"] {
+                background-color: #1E293B;
+                border-color: #334155;
+            }
+            .main-header h1 { color: #4ADE80; } /* Green-400 */
+            .main-header p { color: #94A3B8; }
+        }
+
+        /* Result Card */
+        .prediction-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            border-top: 6px solid #22c55e;
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .prediction-card {
+                background: #1E293B;
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .confidence-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            background-color: #DCFCE7;
+            color: #166534;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+        
+        @media (prefers-color-scheme: dark) {
+            .confidence-badge {
+                background-color: #14532D;
+                color: #DCFCE7;
+            }
+        }
+
+        /* Hide Streamlit Menu */
+        #MainMenu {visibility: hidden;}
+        footer {visibility: hidden;}
+        
     </style>
 """, unsafe_allow_html=True)
 
-# Application Header
-st.markdown("<h1>🥔 PotatoPulse <br><span style='font-size: 1.5rem; color: #a3a3a3; font-weight: 400;'>Advanced Disease Detection System</span></h1>", unsafe_allow_html=True)
+# Header
+st.markdown("""
+<div class="main-header">
+    <h1>🥔 PotatoPulse</h1>
+    <p>AI-Powered Plant Health Diagnostics</p>
+</div>
+""", unsafe_allow_html=True)
 
-# Sidebar Content
-with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/188/188333.png", width=100)
-    st.markdown("### About PotatoPulse")
-    st.markdown("""
-    PotatoPulse uses advanced Deep Learning (CNN) to detect diseases in potato plants with high accuracy.
-    
-    **Supported Classes:**
-    - 🌿 **Healthy**: The plant is healthy.
-    - 🍂 **Early Blight**: Caused by *Alternaria solani*.
-    - 🍄 **Late Blight**: Caused by *Phytophthora infestans*.
-    """)
-    st.markdown("---")
-    st.markdown("### Usage Guide")
-    st.markdown("1. Upload a clear image of a potato leaf.\n2. The system will analyze the image.\n3. View the prediction and confidence score.")
-    
-    st.markdown("---")
-    st.markdown("<div style='text-align: center; color: #666;'>Powered by TensorFlow & Streamlit</div>", unsafe_allow_html=True)
-
-
-# Load the Model
+# Model Loading
 @st.cache_resource
 def load_model():
-    # Use absolute path relative to this file to find the model
-    # app/main.py -> ../model/potato_model.keras
     model_path = os.path.join(os.path.dirname(__file__), '..', 'model', 'potato_model.keras')
     if not os.path.exists(model_path):
-        st.error(f"Model file not found at: {model_path}")
+        st.error("Model not found.")
         return None
     return tf.keras.models.load_model(model_path)
 
 model = load_model()
-
-# Class Names (Standard PlantVillage Order)
 CLASS_NAMES = ['Early Blight', 'Late Blight', 'Healthy']
 
-def import_and_predict(image_data, model):
-    size = (256, 256)
-    # Ensure image is RGB (removes Alpha channel if present)
-    image_data = image_data.convert('RGB')
-    image = ImageOps.fit(image_data, size, Image.Resampling.LANCZOS)
+def predict(image, model):
+    image = image.convert('RGB')
+    image = ImageOps.fit(image, (256, 256), Image.Resampling.LANCZOS)
     img_array = tf.keras.preprocessing.image.img_to_array(image)
     img_array = tf.expand_dims(img_array, 0)
-    
-    prediction = model.predict(img_array)
-    return prediction
+    return model.predict(img_array)
 
-# Main Content Area
-col1, col2, col3 = st.columns([1, 2, 1])
+# Main Interface
+col1, col2, col3 = st.columns([1, 8, 1])
 
 with col2:
-    # Added label as required, hidden via label_visibility
-    file = st.file_uploader("Upload Leaf Image", type=["jpg", "png", "jpeg"], label_visibility="visible")
+    uploaded_file = st.file_uploader("Drop your leaf image here to analyze", type=['png', 'jpg', 'jpeg'])
 
-if file is None:
-    st.markdown("<div style='text-align: center; margin-top: 2rem; color: #888;'>Please upload an image to start analysis</div>", unsafe_allow_html=True)
-else:
-    if model is None:
-        st.error("Model could not be loaded. Please check the model path.")
-    else:
-        # Load logic
-        image = Image.open(file)
+    if uploaded_file and model:
+        image = Image.open(uploaded_file)
         
-        # Display the image
-        st.markdown("<br>", unsafe_allow_html=True)
-        col_img1, col_img2, col_img3 = st.columns([1, 2, 1])
-        with col_img2:
-            st.image(image, use_container_width=True, caption="Uploaded Image")
+        # Grid layout for result
+        result_col1, result_col2 = st.columns([1, 1])
         
-        # Make Prediction
-        with st.spinner('Analyzing...'):
-            try:
-                prediction = import_and_predict(image, model)
-                class_index = np.argmax(prediction[0])
-                class_name = CLASS_NAMES[class_index]
-                confidence = np.max(prediction[0]) * 100
-
-                # Display Result
-                st.markdown(f"""
-                <div class="result-card">
-                    <h2 style="margin-bottom: 0;">Prediction Result</h2>
-                    <div style="font-size: 3rem; margin: 1rem 0; color: #2ecc71;">{class_name}</div>
-                    <div style="font-size: 1.2rem; color: #aaa;">Confidence: <strong>{confidence:.2f}%</strong></div>
+        with result_col1:
+            st.markdown("### 📸 Scan Preview")
+            st.image(image, use_container_width=True, caption="Source Image")
+            
+        with result_col2:
+            with st.spinner("Processing bio-markers..."):
+                predictions = predict(image, model)
+                score = tf.nn.softmax(predictions[0])
+                class_index = np.argmax(predictions[0])
+                label = CLASS_NAMES[class_index]
+                confidence = np.max(predictions[0]) * 100
+            
+            # Dynamic color based on result
+            color_code = "#22c55e" # Green
+            if label != "Healthy":
+                color_code = "#ef4444" # Red
+            
+            st.markdown(f"""
+            <div class="prediction-card" style="border-top-color: {color_code};">
+                <h3 style="margin:0; color: #64748B; font-size: 1rem; text-transform: uppercase; letter-spacing: 1px;">Diagnosis</h3>
+                <h2 style="font-size: 2.5rem; font-weight: 800; margin: 0.5rem 0; color: {color_code};">{label}</h2>
+                <div class="confidence-badge">
+                    Accuracy: {confidence:.2f}%
                 </div>
-                """, unsafe_allow_html=True)
-                
-                # Additional Details based on prediction
-                st.markdown("<br>", unsafe_allow_html=True)
-                if class_name == 'Healthy':
-                    st.success("✅ Great news! The plant appears to be healthy.")
-                elif class_name == 'Early Blight':
-                    st.warning("⚠️ **Early Blight Detected**\n\nSymptoms include small, dark spots with concentric rings on older leaves. It is often caused by warm, humid conditions.")
-                elif class_name == 'Late Blight':
-                    st.error("🚨 **Late Blight Detected**\n\nThis is a serious disease that causes large, irregular, dark/water-soaked spots. It spreads rapidly in cool, wet weather.")
-            except Exception as e:
-                st.error(f"Error occurred during prediction: {str(e)}")
+                <p style="margin-top: 1.5rem; color: #64748B; font-size: 0.95rem; line-height: 1.6;">
+                    {
+                        "The plant specimen shows no signs of disease. Maintain regular watering schedules." if label == "Healthy" else 
+                        f"Detected signs of {label}. Immediate attention recommended to prevent crop spread."
+                    }
+                </p>
+            </div>
+            """, unsafe_allow_html=True)
