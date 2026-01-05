@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import tensorflow as tf
+import tflite_runtime.interpreter as tflite
 from fastapi import FastAPI, File, UploadFile, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -9,7 +9,7 @@ from PIL import Image, ImageOps
 import uvicorn
 import io
 
-app = FastAPI(title="PotatoPulse API")
+app = FastAPI(title="PotatoPulse X1 API")
 
 # Enable CORS
 app.add_middleware(
@@ -20,14 +20,24 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load Model
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'potato_model.keras')
+# Load TFLite Model
+# Updated to use tflite model for deployment
+MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'potato_model.tflite')
+
+interpreter = None
+input_details = None
+output_details = None
 
 if os.path.exists(MODEL_PATH):
-    model = tf.keras.models.load_model(MODEL_PATH)
-    print("Model loaded successfully.")
+    try:
+        interpreter = tflite.Interpreter(model_path=MODEL_PATH)
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+        print("TFLite Model loaded successfully.")
+    except Exception as e:
+        print(f"Error loading TFLite model: {e}")
 else:
-    model = None
     print(f"Error: Model not found at {MODEL_PATH}")
 
 CLASS_NAMES = ['Early Blight', 'Late Blight', 'Healthy']
@@ -38,8 +48,8 @@ async def read_index():
 
 @app.post("/predict")
 async def predict(file: UploadFile = File(...)):
-    if model is None:
-        raise HTTPException(status_code=500, detail="Model not loaded")
+    if interpreter is None:
+        raise HTTPException(status_code=500, detail="Model logic not initialized")
 
     # Read image
     contents = await file.read()
@@ -48,11 +58,24 @@ async def predict(file: UploadFile = File(...)):
     # Preprocessing
     image = image.convert('RGB')
     image = ImageOps.fit(image, (256, 256), Image.Resampling.LANCZOS)
-    img_array = tf.keras.preprocessing.image.img_to_array(image)
-    img_array = tf.expand_dims(img_array, 0)
+    img_array = np.array(image, dtype=np.float32)
     
-    # Prediction
-    predictions = model.predict(img_array)
+    # Normalize if previously trained model expected it (Usually /255.0)
+    # The original keras model in notebook had a Rescaling(1./255) layer.
+    # Keras models INCLUDE that layer in the TFLite conversion usually.
+    # But usually TFLite input expects raw float32 input.
+    # Let's check expectations. Safest is to pass [0, 255] float32 as before if the Rescaling layer was part of the model map.
+    
+    img_array = np.expand_dims(img_array, axis=0)
+    
+    # Prediction Main
+    input_index = input_details[0]['index']
+    output_index = output_details[0]['index']
+    
+    interpreter.set_tensor(input_index, img_array)
+    interpreter.invoke()
+    
+    predictions = interpreter.get_tensor(output_index)
     prediction_scores = predictions[0]
     
     # Get top class
