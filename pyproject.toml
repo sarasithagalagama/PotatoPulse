@@ -1,4 +1,0 @@
-[project]
-name = "potatopulse"
-version = "1.0.0"
-requires-python = ">=3.9,<3.12"
