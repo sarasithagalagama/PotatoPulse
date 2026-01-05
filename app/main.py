@@ -9,166 +9,180 @@ st.set_page_config(
     page_title="PotatoPulse | Disease Classification",
     page_icon="🥔",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
-# Custom CSS for premium aesthetics
+# Custom CSS for the "Dark Card" Aesthetic
 st.markdown("""
-    <style>
-    /* Global Styles */
+<style>
+    /* 1. Global Background & Fonts */
     .stApp {
-        background-color: #0e1117;
-        color: #fafafa;
+        background-color: #050505;
+        background-image: linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+        background-size: 30px 30px;
         font-family: 'Inter', sans-serif;
     }
-    
-    /* Custom Sidebar */
-    [data-testid="stSidebar"] {
-        background-color: #161b22;
-        border-right: 1px solid #30363d;
+
+    /* 2. Hide default Streamlit elements */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+
+    /* 3. The Main Card Container */
+    .main-card {
+        background-color: #121212;
+        border: 1px solid #2a2a2a;
+        border-radius: 20px;
+        padding: 40px;
+        max-width: 650px;
+        margin: 50px auto; /* Centers the card */
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        text-align: center;
     }
-    
-    /* Titles and Headings */
-    h1, h2, h3 {
+
+    /* 4. Badge Styling */
+    .badge {
+        background-color: rgba(46, 204, 113, 0.15);
         color: #2ecc71;
+        padding: 5px 15px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        letter-spacing: 1px;
+        display: inline-block;
+        margin-bottom: 20px;
+        border: 1px solid rgba(46, 204, 113, 0.3);
+    }
+
+    /* 5. Typography */
+    .title-text {
+        color: #ffffff;
+        font-size: 2.2rem;
         font-weight: 700;
+        margin-bottom: 5px;
     }
     
-    h1 {
-        text-align: center;
-        margin-bottom: 2rem;
-        text-shadow: 0 0 20px rgba(46, 204, 113, 0.3);
+    .subtitle-text {
+        color: #888888;
+        font-size: 0.9rem;
+        margin-bottom: 30px;
     }
-    
-    /* Glassmorphism Card for Results */
-    .result-card {
-        background: rgba(22, 27, 34, 0.7);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(48, 54, 61, 0.5);
-        border-radius: 16px;
-        padding: 2rem;
-        margin-top: 2rem;
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        text-align: center;
-    }
-    
-    /* Upload Widget Styling */
+
+    /* 6. Customizing the File Uploader to look like the "Drop Zone" */
+    /* This overrides Streamlit's default uploader styles */
     .stFileUploader {
-        padding: 2rem;
-        border: 2px dashed #2ecc71;
+        background-color: #0a0a0a;
+        border: 2px dashed #333;
         border-radius: 12px;
-        background-color: rgba(46, 204, 113, 0.05);
-        transition: all 0.3s ease;
+        padding: 30px;
+        text-align: center;
+        transition: border-color 0.3s ease;
     }
     
     .stFileUploader:hover {
-        background-color: rgba(46, 204, 113, 0.1);
-        border-color: #27ae60;
+        border-color: #2ecc71;
     }
 
-    /* Info Box styling */
-    .info-box {
-        background-color: #1f2937;
-        border-left: 4px solid #2ecc71;
-        padding: 1rem;
-        margin-bottom: 1rem;
-        border-radius: 4px;
+    /* 7. Action Button Overrides */
+    div.stButton > button {
+        width: 100%;
+        background-color: #1a1a1a;
+        color: #ffffff;
+        border: 1px solid #333;
+        padding: 15px 0;
+        font-size: 1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
     }
-    </style>
+
+    div.stButton > button:hover {
+        background-color: #2ecc71;
+        color: #000;
+        border-color: #2ecc71;
+        box-shadow: 0 5px 15px rgba(46, 204, 113, 0.3);
+    }
+
+    /* Result Animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    .result-box {
+        animation: fadeIn 0.5s ease-out;
+        margin-top: 30px;
+        padding: 20px;
+        background: rgba(255,255,255,0.05);
+        border-radius: 10px;
+        border-left: 5px solid #2ecc71;
+    }
+
+</style>
 """, unsafe_allow_html=True)
 
-# Application Header
-st.markdown("<h1>🥔 PotatoPulse <br><span style='font-size: 1.5rem; color: #a3a3a3; font-weight: 400;'>Advanced Disease Detection System</span></h1>", unsafe_allow_html=True)
+# --- APP LOGIC ---
 
-# Sidebar Content
-with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/188/188333.png", width=100)
-    st.markdown("### About PotatoPulse")
-    st.markdown("""
-    PotatoPulse uses advanced Deep Learning (CNN) to detect diseases in potato plants with high accuracy.
-    
-    **Supported Classes:**
-    - 🌿 **Healthy**: The plant is healthy.
-    - 🍂 **Early Blight**: Caused by *Alternaria solani*.
-    - 🍄 **Late Blight**: Caused by *Phytophthora infestans*.
-    """)
-    st.markdown("---")
-    st.markdown("### Usage Guide")
-    st.markdown("1. Upload a clear image of a potato leaf.\n2. The system will analyze the image.\n3. View the prediction and confidence score.")
-    
-    st.markdown("---")
-    st.markdown("<div style='text-align: center; color: #666;'>Powered by TensorFlow & Streamlit</div>", unsafe_allow_html=True)
-
-
-# Load the Model
 @st.cache_resource
 def load_model():
     model_path = os.path.join(os.path.dirname(__file__), '..', 'model', 'potato_model.keras')
     if not os.path.exists(model_path):
-        st.error(f"Model file not found at: {model_path}")
         return None
     return tf.keras.models.load_model(model_path)
 
 model = load_model()
-
-# Class Names (Standard PlantVillage Order)
 CLASS_NAMES = ['Early Blight', 'Late Blight', 'Healthy']
 
-def import_and_predict(image_data, model):
+def predict_image(image, model):
     size = (256, 256)
-    image = ImageOps.fit(image_data, size, Image.Resampling.LANCZOS)
+    image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
     img_array = tf.keras.preprocessing.image.img_to_array(image)
     img_array = tf.expand_dims(img_array, 0)
-    
-    # Model expects input in range [0, 255] if Rescaling layer is included in the model itself (which it is)
-    # However, let's verify if the notebook's preprocessing handles everything.
-    # The notebook model has `layers.Rescaling(1./255)` as the first layer.
-    # So passing uint8 [0, 255] is correct.
-    
     prediction = model.predict(img_array)
-    return prediction
+    class_index = np.argmax(prediction[0])
+    confidence = np.max(prediction[0]) * 100
+    return CLASS_NAMES[class_index], confidence
 
-# Main Content Area
-col1, col2, col3 = st.columns([1, 2, 1])
+# --- LAYOUT CONSTRUCTION ---
 
-with col2:
-    file = st.file_uploader("Upload Leaf Image", type=["jpg", "png", "jpeg"])
+# Use columns to center the "Card" visually
+col_left, col_center, col_right = st.columns([1, 2, 1])
 
-if file is None:
-    st.markdown("<div style='text-align: center; margin-top: 2rem; color: #888;'>Please upload an image to start analysis</div>", unsafe_allow_html=True)
-else:
-    if model is None:
-        st.error("Model could not be loaded. Please check the model path.")
-    else:
-        image = Image.open(file)
-        
-        # Display the image
-        st.markdown("<br>", unsafe_allow_html=True)
-        col_img1, col_img2, col_img3 = st.columns([1, 2, 1])
-        with col_img2:
-            st.image(image, use_container_width=True, caption="Uploaded Image")
-        
-        # Make Prediction
-        with st.spinner('Analyzing...'):
-            prediction = import_and_predict(image, model)
-            class_index = np.argmax(prediction[0])
-            class_name = CLASS_NAMES[class_index]
-            confidence = np.max(prediction[0]) * 100
+with col_center:
+    st.markdown("""
+        <div class="main-card">
+            <div class="badge">● POTATOPULSE X1</div>
+            <div class="title-text">🥔 Potato Disease Analyzer</div>
+            <div class="subtitle-text">AI-Powered Detection for Early Blight, Late Blight & Healthy Leaves</div>
+    """, unsafe_allow_html=True)
+    
+    # File Uploader
+    file = st.file_uploader("", type=["jpg", "png", "jpeg"], label_visibility="collapsed")
+    
+    # Action Button
+    analyze_btn = st.button("Run Analysis Protocol")
 
-        # Display Result
-        st.markdown(f"""
-        <div class="result-card">
-            <h2 style="margin-bottom: 0;">Prediction Result</h2>
-            <div style="font-size: 3rem; margin: 1rem 0; color: #2ecc71;">{class_name}</div>
-            <div style="font-size: 1.2rem; color: #aaa;">Confidence: <strong>{confidence:.2f}%</strong></div>
-        </div>
-        """, unsafe_allow_html=True)
-        
-        # Additional Details based on prediction
-        st.markdown("<br>", unsafe_allow_html=True)
-        if class_name == 'Healthy':
-            st.success("✅ Great news! The plant appears to be healthy.")
-        elif class_name == 'Early Blight':
-            st.warning("⚠️ **Early Blight Detected**\n\nSymptoms include small, dark spots with concentric rings on older leaves. It is often caused by warm, humid conditions.")
-        elif class_name == 'Late Blight':
-            st.error("🚨 **Late Blight Detected**\n\nThis is a serious disease that causes large, irregular, dark/water-soaked spots. It spreads rapidly in cool, wet weather.")
+    if file is not None:
+        if analyze_btn: # Only analyze when button is clicked
+            if model is None:
+                st.error("Error: Model not found.")
+            else:
+                image = Image.open(file)
+                
+                with st.spinner("Processing bio-data..."):
+                    class_name, confidence = predict_image(image, model)
+                
+                # Result Display
+                status_color = "#2ecc71" if class_name == "Healthy" else "#e74c3c"
+                
+                st.markdown(f"""
+                <div class="result-box" style="border-left-color: {status_color};">
+                    <h3 style="margin:0; color: {status_color};">{class_name} Detected</h3>
+                    <p style="margin:5px 0 0 0; color: #aaa;">Confidence Protocol: <strong>{confidence:.2f}%</strong></p>
+                </div>
+                """, unsafe_allow_html=True)
+
+    st.markdown("</div>", unsafe_allow_html=True) # Close main-card
