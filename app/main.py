@@ -279,7 +279,7 @@ def predict(image, model):
     image = ImageOps.fit(image, (256, 256), Image.Resampling.LANCZOS)
     img_array = tf.keras.preprocessing.image.img_to_array(image)
     img_array = tf.expand_dims(img_array, 0)
-    img_array = img_array / 255.0  # Normalize
+
     return model.predict(img_array)
 
 # Main Content Logic
