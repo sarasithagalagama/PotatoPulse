@@ -1,5 +1,7 @@
 # PotatoPulse | Advanced Agricultural Disease Detection
 
+[![Streamlit App](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://potatopulse.streamlit.app/)
+
 PotatoPulse is an end-to-end deep learning solution designed to automate the detection of pathological states in potato leaf imagery. Built to address crop yield loss caused by *Phytophthora infestans* (Late Blight) and *Alternaria solani* (Early Blight), this system leverages a custom Deep Convolutional Neural Network (CNN) to achieve high-accuracy classification in real-time.
 
 The project demonstrates a full machine learning lifecycle—from data pipeline construction and image preprocessing to model architecture design and deployment of a scalable inference engine.
