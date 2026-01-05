@@ -208,27 +208,7 @@ st.markdown("""
             background-color: #222;
         }
 
-        /* Chat Widget Floating Action Button */
-        .chat-widget {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            background: #bef264;
-            color: black;
-            width: 60px;
-            height: 60px;
-            border-radius: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            cursor: pointer;
-            z-index: 999;
-            transition: all 0.3s;
-        }
-        .chat-widget:hover {
-            transform: scale(1.1);
-        }
+
 
         /* Hide default Streamlit Styling */
         #MainMenu {visibility: hidden;}
@@ -237,12 +217,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Floating Chat Widget (Visual Only)
-st.markdown("""
-<div class="chat-widget" title="Agri-Assistant">
-    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-</div>
-""", unsafe_allow_html=True)
+
 
 # Sidebar with Restored Content + Dark Theme
 with st.sidebar:
@@ -254,28 +229,7 @@ with st.sidebar:
     page = st.radio("", ["🏠 Home", "ℹ️ About", "📊 Model Info"], label_visibility="collapsed")
     
     st.markdown("---")
-    st.subheader("🎯 Quick Stats")
-    st.markdown("""
-    <div style="margin-bottom: 20px;">
-        <div style="color: #888; font-size: 0.9rem;">Model Accuracy</div>
-        <div style="font-size: 2rem; font-weight: 700; color: #bef264;">97.77%</div>
-        <span style="background: rgba(190, 242, 100, 0.1); color: #bef264; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">↑ Training</span>
-    </div>
-    
-    <div style="margin-bottom: 20px;">
-        <div style="color: #888; font-size: 0.9rem;">Validation Acc</div>
-        <div style="font-size: 2rem; font-weight: 700; color: #bef264;">97.40%</div>
-        <span style="background: rgba(190, 242, 100, 0.1); color: #bef264; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">↑ 0.37% gap</span>
-    </div>
 
-    <div style="margin-bottom: 20px;">
-        <div style="color: #888; font-size: 0.9rem;">Test Accuracy</div>
-        <div style="font-size: 2rem; font-weight: 700; color: #bef264;">94.53%</div>
-        <span style="background: rgba(190, 242, 100, 0.1); color: #bef264; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem;">↑ Robust</span>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    st.markdown("---")
     st.subheader("🔬 Detectable Diseases")
     st.markdown("""
     - 🍂 **Early Blight**
