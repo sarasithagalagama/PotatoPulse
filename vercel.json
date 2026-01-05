@@ -3,7 +3,10 @@
         {
             "src": "fastapi_app/main.py",
             "use": "@vercel/python",
-            "config": { "runtime": "python3.9" }
+            "config": { 
+                "runtime": "python3.9",
+                "includeFiles": ["model/potato_model.tflite"] 
+            }
         }
     ],
     "rewrites": [
