@@ -125,7 +125,7 @@ st.markdown("""
 st.markdown("""
 <div class="main-header">
     <h1>🥔 PotatoPulse</h1>
-    <p>AI-Powered Plant Health Diagnostics</p>
+    <p>Potato Disease Detection & Analysis System</p>
 </div>
 """, unsafe_allow_html=True)
 
