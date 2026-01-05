@@ -21,24 +21,27 @@ app.add_middleware(
 )
 
 # Load TFLite Model
-# Updated to use tflite model for deployment
-MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'potato_model.tflite')
+# In Vercel, the file system can be tricky.
+# We are in fastapi_app/main.py. The model is in ../model/potato_model.tflite.
+# Re-verifying path logic for Serverless environment.
 
-interpreter = None
-input_details = None
-output_details = None
+try:
+    # Try finding it relative to the file first (Local/Standard)
+    MODEL_PATH = os.path.join(os.path.dirname(__file__), '..', 'model', 'potato_model.tflite')
+    
+    if not os.path.exists(MODEL_PATH):
+        # Fallback for Vercel: sometimes files are moved to root in the lambda function
+        MODEL_PATH = os.path.join(os.getcwd(), 'model', 'potato_model.tflite')
 
-if os.path.exists(MODEL_PATH):
-    try:
-        interpreter = tflite.Interpreter(model_path=MODEL_PATH)
-        interpreter.allocate_tensors()
-        input_details = interpreter.get_input_details()
-        output_details = interpreter.get_output_details()
-        print("TFLite Model loaded successfully.")
-    except Exception as e:
-        print(f"Error loading TFLite model: {e}")
-else:
-    print(f"Error: Model not found at {MODEL_PATH}")
+    interpreter = tflite.Interpreter(model_path=MODEL_PATH)
+
+    interpreter.allocate_tensors()
+    input_details = interpreter.get_input_details()
+    output_details = interpreter.get_output_details()
+    print("TFLite Model loaded successfully.")
+except Exception as e:
+    print(f"Error loading TFLite model: {e}")
+    interpreter = None
 
 CLASS_NAMES = ['Early Blight', 'Late Blight', 'Healthy']
 
