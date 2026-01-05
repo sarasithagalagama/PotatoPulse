@@ -284,7 +284,7 @@ with st.sidebar:
     """)
     
     st.markdown("---")
-    st.caption("Developed with ❤️ for Agriculture")
+    st.markdown("Developed by [Sarasitha Galagama](https://sarasitha.me/)")
 
 # Model Loading
 @st.cache_resource
@@ -409,7 +409,7 @@ if page == "🏠 Home":
             
             # Confidence Progress Bar
             st.markdown("**Confidence Score**")
-            st.progress(confidence / 100)
+            st.progress(float(confidence / 100))
             
             # All Predictions
             st.markdown("**All Predictions:**")
