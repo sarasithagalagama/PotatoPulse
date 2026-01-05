@@ -38,9 +38,9 @@ The core classification engine is a sequential CNN trained on the PlantVillage d
     *   Loss: `SparseCategoricalCrossentropy`
     *   Epochs: 20
 *   **Performance Achieved**:
-    *   🟩 **Training Accuracy**: ~97.77%
-    *   🟦 **Validation Accuracy**: ~97.40%
-    *   🧪 **Test Accuracy**: ~94.53%
+    *   **Training Accuracy**: ~97.77%
+    *   **Validation Accuracy**: ~97.40%
+    *   **Test Accuracy**: ~94.53%
 
 ## Model Robustness & Generalization
 
