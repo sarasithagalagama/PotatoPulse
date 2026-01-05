@@ -10,6 +10,11 @@ The project demonstrates a full machine learning lifecycle—from data pipeline 
 
 The core classification engine is a sequential CNN trained on the PlantVillage dataset, engineered for robustness and generalization:
 
+## Dataset
+
+*   **Source**: [PlantVillage Dataset on Kaggle](https://www.kaggle.com/datasets/abdallahalidev/plantvillage-dataset)
+
+
 *   **Data Pipeline**: Implemented automated data curation, including partitioning (Train/Val/Test), resizing, and normalization (recalling pixel values).
 *   **Augmentation**: Integrated `RandomFlip` and `RandomRotation` layers directly into the model to mitigate overfitting and improve invariance to orientation.
 *   **Model Architecture**: A 6-block Convolutional Network utilizing:
