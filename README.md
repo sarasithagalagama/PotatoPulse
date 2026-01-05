@@ -1,65 +1,27 @@
-# 🥔 PotatoPulse - Disease Classification
+# PotatoPulse | Advanced Agricultural Disease Detection
 
-PotatoPulse is an advanced deep learning application designed to detect diseases in potato plants from leaf images. It identifies **Early Blight**, **Late Blight**, and **Healthy** conditions with high accuracy using a Convolutional Neural Network (CNN).
+PotatoPulse is an end-to-end deep learning solution designed to automate the detection of pathological states in potato leaf imagery. Built to address crop yield loss caused by *Phytophthora infestans* (Late Blight) and *Alternaria solani* (Early Blight), this system leverages a custom Deep Convolutional Neural Network (CNN) to achieve high-accuracy classification in real-time.
 
-## 🚀 Features
+The project demonstrates a full machine learning lifecycle—from data pipeline construction and image preprocessing to model architecture design and deployment of a scalable inference engine.
 
-- **Disease Detection**: Classifies images into 'Early Blight', 'Late Blight', or 'Healthy'.
-- **Deep Learning**: Powered by a custom trained TensorFlow/Keras model.
-- **Instant Analysis**: Get real-time predictions with confidence scores.
-- **User-Friendly Interface**: Built with [Streamlit](https://streamlit.io/) for a smooth experience.
+## Technical Architecture
 
-## 🛠️ Tech Stack
+The core classification engine is a sequential CNN trained on the PlantVillage dataset, engineered for robustness and generalization:
 
-- **Python**: Core programming language.
-- **TensorFlow/Keras**: For loading and running the classification model.
-- **Streamlit**: For the web interface.
-- **Pillow**: For image processing.
+*   **Data Pipeline**: Implemented automated data curation, including partitioning (Train/Val/Test), resizing, and normalization (recalling pixel values).
+*   **Augmentation**: Integrated `RandomFlip` and `RandomRotation` layers directly into the model to mitigate overfitting and improve invariance to orientation.
+*   **Model Architecture**: A 6-block Convolutional Network utilizing:
+    *   32-64 filter feature extraction layers with ReLU activation.
+    *   MaxPooling for spatial down-sampling and translational invariance.
+    *   Flattening and Dense layers with Softmax activation for multi-class probability distribution.
+*   **Optimization**: Compiled with the Adam optimizer and Sparse Categorical Crossentropy loss function for efficient convergence.
 
-## 📂 Project Structure
+## Technology Stack
 
-```
-.
-├── app/
-│   ├── main.py          # The main Streamlit application
-│   └── requirements.txt # Python dependencies
-├── model/
-│   └── potato_model.keras # Trained model file
-├── notebook/
-│   └── Potato_Disease_training.ipynb # Training notebook
-└── README.md
-```
+*   **Deep Learning**: TensorFlow, Keras
+*   **Computer Vision**: OpenCV, Pillow (PIL), NumPy
+*   **Data Processing**: Pandas, Matplotlib (Performance Visualization)
+*   **Deployment & UI**: Streamlit (Python-based reactive web framework)
+*   **Version Control**: Git
 
-## 🏃‍♂️ How to Run Locally
-
-1. **Clone the repository**:
-
-   ```bash
-   git clone <your-repo-url>
-   cd PotatoPulse
-   ```
-
-2. **Install dependencies**:
-
-   ```bash
-   pip install -r app/requirements.txt
-   ```
-
-3. **Run the app**:
-   ```bash
-   streamlit run app/main.py
-   ```
-
-## ☁️ Deployment
-
-This app is ready to be deployed on **Streamlit Cloud**:
-
-1. Push this repository to GitHub.
-2. Log in to [share.streamlit.io](https://share.streamlit.io/).
-3. Click "New App".
-4. Select your repository, branch, and set the **Main file path** to `app/main.py`.
-5. Click **Deploy**!
-
----
-
-_Created with ❤️ by PotatoPulse Team_
+This project serves as a practical implementation of computer vision techniques applied to precision agriculture, showcasing proficiency in tensor operations, neural network design, and production-grade software development.
